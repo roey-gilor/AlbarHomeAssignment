@@ -1,0 +1,71 @@
+<h2>הוספת ספר חדש</h2>
+
+<form (ngSubmit)="onSubmit()" #bookForm="ngForm">
+
+    <div>
+        <label for="bookName">שם הספר: </label>
+        <input type="text" id="bookName" name="bookName" [(ngModel)]="book.bookName" maxlength="100" required
+            #bookName="ngModel">
+        @if (bookName.invalid && bookName.touched) {
+        @if (bookName.errors?.['required']) {
+        <span style="color: red; font-size: 12px;"> שדה חובה</span>
+        }
+        @if (bookName.errors?.['maxlength']) {
+        <span style="color: red; font-size: 12px;">אסור יותר מ-100 תווים</span>
+        }
+        }
+    </div>
+    <br>
+
+    <div>
+        <label for="category">קטגוריה: </label>
+        <input type="text" id="category" name="category" [(ngModel)]="book.category" required #category="ngModel">
+        @if (category.invalid && category.touched) {
+        <span style="color: red; font-size: 12px;"> שדה חובה</span>
+        }
+    </div>
+    <br>
+
+    <div>
+        <label for="price">מחיר (₪): </label>
+        <input type="number" id="price" name="price" [(ngModel)]="book.price" required min="0.1" max="10000" step="0.1"
+            #price="ngModel">
+        @if (price.invalid && price.touched) {
+        @if (price.errors?.['required']) {
+        <span style="color: red; font-size: 12px;"> שדה חובה</span>
+        }
+        @if (price.errors?.['min'] || price.errors?.['max']) {
+        <span style="color: red; font-size: 12px;"> מחיר חייב להיות בין 0.1 ל-10,000</span>
+        }
+        }
+    </div>
+    <br>
+
+    <div>
+        <label for="unitsInStock">יחידות במלאי: </label>
+        <input type="number" id="unitsInStock" name="unitsInStock" [(ngModel)]="book.unitsInStock" required min="0"
+            max="10000" #units="ngModel">
+        @if (units.invalid && units.touched) {
+        @if (units.errors?.['min'] || units.errors?.['max']) {
+        <span style="color: red; font-size: 12px;"> כמות במלאי לא יכולה להיות שלילית (או מעל 10,000)</span>
+        } @else {
+        <span style="color: red; font-size: 12px;"> שדה חובה</span>
+        }
+        }
+    </div>
+    <br>
+
+    @if (errorMessage()) {
+    <div style="color: red; font-weight: bold;">{{ errorMessage() }}</div>
+    <br>
+    }
+
+    <div class="action-buttons">
+        <button type="button" (click)="cancel()">ביטול</button>
+
+        <button type="submit" [disabled]="bookForm.invalid || isLoading()">
+            {{ isLoading() ? 'שומר...' : 'שמור ספר' }}
+        </button>
+    </div>
+
+</form>

@@ -1,0 +1,37 @@
+<h2>התחברות</h2>
+
+<form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+
+    <div>
+        <label for="username">שם משתמש: </label>
+        <input type="text" id="username" name="username" [(ngModel)]="credentials.Username" required
+            #username="ngModel">
+
+        @if (username.invalid && username.touched) {
+        <span style="color: red; font-size: 12px;"> שדה חובה</span>
+        }
+    </div>
+    <br>
+
+    <div>
+        <label for="password">סיסמה: </label>
+        <input type="password" id="password" name="password" [(ngModel)]="credentials.Password" required
+            #password="ngModel">
+
+        @if (password.invalid && password.touched) {
+        <span style="color: red; font-size: 12px;"> שדה חובה</span>
+        }
+    </div>
+    <br>
+
+    @if (errorMessage()) {
+    <div style="color: red; font-weight: bold;">{{ errorMessage() }}</div>
+    <br>
+    }
+
+    <button type="submit" style="background-color: cadetblue; color: black;"
+        [disabled]="loginForm.invalid || isLoading()">
+        {{ isLoading() ? 'מתחבר...' : 'כניסה' }}
+    </button>
+
+</form>

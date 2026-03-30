@@ -1,0 +1,101 @@
+<div class="header-container">
+    <h2>ניהול מלאי ספרים</h2>
+    <div class="action-buttons">
+        <button (click)="addNewBook()" class="newBook-btn">+ הוסף ספר חדש</button>
+        <button (click)="logout()" class="logout-btn">התנתק</button>
+    </div>
+</div>
+
+<div class="search-bar">
+    <div class="search-group">
+        <input type="text" [(ngModel)]="searchNameTerm" placeholder="חיפוש לפי שם ספר...">
+        <button (click)="searchByName()">חפש שם</button>
+    </div>
+
+    <div class="search-group">
+        <input type="text" [(ngModel)]="searchCategoryTerm" placeholder="חיפוש לפי קטגוריה...">
+        <button (click)="searchByCategory()">חפש קטגוריה</button>
+    </div>
+
+    @if (searchNameTerm || searchCategoryTerm) {
+    <button (click)="clearSearch()" class="clear-btn">נקה חיפוש</button>
+    }
+</div>
+<br>
+
+@if (isLoading()) {
+<div>טוען נתונים מהשרת...</div>
+}
+
+@if (errorMessage()) {
+<div style="color: red; font-weight: bold;">{{ errorMessage() }}</div>
+}
+
+@if (!isLoading() && !errorMessage() && books().length === 0) {
+<div>לא נמצאו ספרים במערכת.</div>
+}
+
+@if (!isLoading() && books().length > 0) {
+<table>
+    <thead>
+        <tr>
+            <th>מזהה (ID)</th>
+            <th>שם הספר</th>
+            <th>קטגוריה</th>
+            <th>מחיר</th>
+            <th>יחידות במלאי</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (book of books(); track book.bookId) {
+        <tr>
+            <td>{{ book.bookId }}</td>
+
+            <td>
+                @if (editingBookId() === book.bookId) {
+                <input type="text" [(ngModel)]="book.bookName" class="edit-input">
+                } @else {
+                {{ book.bookName }}
+                }
+            </td>
+
+            <td>
+                @if (editingBookId() === book.bookId) {
+                <input type="text" [(ngModel)]="book.category" class="edit-input">
+                } @else {
+                {{ book.category }}
+                }
+            </td>
+
+            <td>
+                @if (editingBookId() === book.bookId) {
+                <input type="number" [(ngModel)]="book.price" class="edit-input" style="width: 70px;" min="0">
+                } @else {
+                {{ book.price }} ₪
+                }
+            </td>
+
+            <td>
+                @if (editingBookId() === book.bookId) {
+                <input type="number" [(ngModel)]="book.unitsInStock" class="edit-input" style="width: 70px;" min="0">
+                } @else {
+                {{ book.unitsInStock }}
+                }
+            </td>
+
+            <td>
+                @if (editingBookId() === book.bookId) {
+                <div class="action-buttons">
+                    <button (click)="saveEdit(book)" style="background-color: #28a745; color: white;">שמור</button>
+                    <button (click)="cancelEdit()">ביטול</button>
+                </div>
+                } @else {
+                <button (click)="startEdit(book.bookId)">עריכה</button>
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+}
